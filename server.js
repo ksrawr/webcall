@@ -48,6 +48,13 @@ io.on('connection', (socket) => {
 
 	});
 
+	socket.on('new message', (msg) => {
+		socket.broadcast.emit('new message', {
+			username: socket.user,
+			message: msg
+		});
+	})
+
 	socket.on('disconnecting', () => {
 		if(socket.user) {
 			console.log('client is disconnecting', socket.user.username);
