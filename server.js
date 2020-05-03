@@ -7,6 +7,12 @@ const io = require('socket.io').listen(server);
 
 const PORT = 4000;
 
+app.get('/', (req, res) => {
+	res.sendFile('./views/index.html', {
+		root: `${__dirname}/`
+	})
+})
+
 // SOCKET TIME!!!!!!
 const users = {};
 
