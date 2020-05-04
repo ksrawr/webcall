@@ -169,6 +169,24 @@ app.post('/api/v1/login', async(req, res, next) => {
 
 })
 
+// Logout Route
+app.delete('/api/v1/logout', async(req, res, next) => {
+
+	try {
+
+		if(!req.session.currentUser) return res.status(401).json({message: "unauthorized"});
+
+		const sessionDestroyed = await req.session.destroy;
+		
+		return res.status(200).json({message: 'logout success', status: 200});
+
+	} catch(error) {
+		console.log(error);
+		return next(error);
+	}
+
+})
+
 server.listen(PORT, () => {
 	console.log(`Server running on http://localhost:${PORT}`);
 })
