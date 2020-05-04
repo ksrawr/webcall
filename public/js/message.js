@@ -16,7 +16,7 @@ const handleSubmitMessage = () => {
 			author: localStorage.getItem('uid');
 		}
 
-		socket.emit('new message', ({messageObj}));
+		state.socket.emit('new message', ({messageObj}));
 	}
 }
 
