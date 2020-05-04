@@ -3,8 +3,11 @@ console.log(' i am app js');
 let state = {
 	username: '',
 	email: '',
+	messages: [],
 	socket: io()
 }
+
+const messageList = document.getElementById('messageList');
 
 const setState = (obj, callback) => {
 	state = { ...state, ...obj};
@@ -19,6 +22,19 @@ const setSocketInfo = () => {
 		if(error) console.warn({error});
 
 	})
+}
+
+const displayMessages = () => {
+	console.log(state.messages);
+	const messagesHTML = state.messages.map((message) => {
+		return `
+			<div>
+				<p class="message">${message.author} [${message.date}]: ${message.content}</p>
+			</div>
+		`;
+	}).join('');
+
+	messageList.innerHTML = messagesHTML;
 }
 
 const getUserInfo = async () => {
@@ -55,5 +71,12 @@ state.socket.on('current users', (data) => {
 	console.log({data});
 })
 
+// Receive new messages
+state.socket.on('new message', (data) => {
+	console.log(data);
+	state.messages.push(data.messageObj);
+
+	displayMessages();
+})
 
 getUserInfo();

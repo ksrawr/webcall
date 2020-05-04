@@ -11,12 +11,19 @@ const handleSubmitMessage = () => {
 
 	if(messageInput) {
 
+		const date = new Date();
+		const datetext = date.toTimeString().split(' ')[0];
+
 		const messageObj = {
-			message: messageInput.value,
-			author: localStorage.getItem('uid')
+			content: messageInput.value,
+			// author: localStorage.getItem('uid')
+			author: state.username,
+			date: datetext
 		};
 
 		state.socket.emit('new message', ({messageObj}));
+
+		messageInput.value = "";
 	}
 }
 

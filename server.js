@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
 
 		console.log(users);
 
-		socket.emit('message', { user: 'admin', msg: `${username}, has joined. Welcome!`});
+		io.emit('message', { user: 'admin', msg: `${username}, has joined. Welcome!`});
 
 		socket.emit('current users', {activeUsers: users});
 
@@ -81,11 +81,8 @@ io.on('connection', (socket) => {
 
 	});
 
-	socket.on('send message', (msg) => {
-		socket.broadcast.emit('send message', {
-			username: socket.user,
-			message: msg
-		});
+	socket.on('new message', (msg) => {
+		io.emit('new message', msg);
 	})
 
 	socket.on('disconnecting', () => {
