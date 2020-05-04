@@ -103,7 +103,7 @@ app.post('/api/v1/register', async (req, res, next) => {
 		}
 
 		// return res.status(200).json({msg: "no user found!"});
-		const salt = await bcyrpt.genSalt(10);
+		const salt = await bcrypt.genSalt(10);
 		const hash = await bcrypt.hash(req.body.password, salt);
 
 		const newUser = {
@@ -128,9 +128,11 @@ app.get('/api/v1/users', async(req, res, next) => {
 
 	try {
 
-		const users = await db.Users.find({});
+		const users = await db.User.find({});
 
-		if(users) return res.status(200).json({users, status: 200});
+		if(!users) return res.status(404).json({message: 'no users', status: 404});
+
+		return res.status(200).json({users, status: 200});
 
 	} catch(error) {
 		console.log(error);
