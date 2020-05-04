@@ -19,24 +19,22 @@ const setSocketInfo = () => {
 		if(error) console.warn({error});
 
 	})
-
-	state.socket.on('current users', (data) => {
-		console.log({data});
-	})
 }
 
 const getUserInfo = async () => {
 	try {
 		const id = localStorage.getItem('uid');
-		const response = await fetch(`/api/v1/users/${id}`);
+		const response = await fetch(`/api/v1/users/${id}`).then();
 
-		const data = response.json();
+		const data = await response.json();
 
-		const { name, status, email } = data.data;
+		console.log(data);
 
-		if(status === 200) {
+		const { name, email } = data.data;
+
+		if(data.status === 200) {
 			setState({
-				'username': name
+				'username': name,
 				'email': email
 			}, setSocketInfo)
 		}
@@ -44,3 +42,18 @@ const getUserInfo = async () => {
 		console.warn({error});
 	}
 }
+
+//////////////////Listen to Server Socket Events
+
+// Server Msgs ('who is connected, who has joined')
+state.socket.on('message', (data) => {
+	console.log({data});
+})
+
+// Active Users
+state.socket.on('current users', (data) => {
+	console.log({data});
+})
+
+
+getUserInfo();

@@ -11,10 +11,10 @@ const handleSubmitMessage = () => {
 
 	if(messageInput) {
 
-		cont messageObj = {
+		const messageObj = {
 			message: messageInput.value,
-			author: localStorage.getItem('uid');
-		}
+			author: localStorage.getItem('uid')
+		};
 
 		state.socket.emit('new message', ({messageObj}));
 	}

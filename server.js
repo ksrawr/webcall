@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
 
 	console.log('client connected');
 
-	socket.on('session', ({username}, callback) => {
+	socket.on('session', ({username, email}, callback) => {
 
 		const user = { username };
 
@@ -63,15 +63,17 @@ io.on('connection', (socket) => {
 
 		console.log(users);
 
-		socket.broadcast.emit('current users', {activeUsers: users});
+		socket.emit('message', { user: 'admin', msg: `${username}, has joined. Welcome!`});
+
+		socket.emit('current users', {activeUsers: users});
 
 		callback();
 
 	});
 
-	socket.on('join', ({roomspace, username}, callback) => {
+	socket.on('join', ({username}, callback) => {
 
-		socket.join(roomspace);
+		// socket.join(roomspace);
 
 		socket.emit('message', { user: 'admin', msg: `${username} has joined!`});
 
@@ -197,6 +199,20 @@ app.delete('/api/v1/logout', async(req, res, next) => {
 
 	} catch(error) {
 		console.log(error);
+		return next(error);
+	}
+
+})
+
+// Show User Route
+app.get('/api/v1/users/:id', async(req, res, next) => {
+
+	try {
+		const foundUser = await db.User.findById(req.params.id);
+
+		return res.status(200).json({data: foundUser, status: 200})
+	} catch(error) {
+		console.log({error});
 		return next(error);
 	}
 
