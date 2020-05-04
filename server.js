@@ -26,12 +26,14 @@ app.use(session({
 );
 
 app.get('/', (req, res) => {
+	if(req.session.currentUser) return res.redirect('/home');
 	res.sendFile('./views/register.html', {
 		root: `${__dirname}/`
 	})
 })
 
 app.get('/login', (req, res) => {
+	if(req.session.currentUser) return res.redirect('/home');
 	res.sendFile('./views/login.html', {
 		root: `${__dirname}/`
 	})
@@ -171,7 +173,7 @@ app.post('/api/v1/login', async(req, res, next) => {
 				email: foundUser.email
 			};
 
-			res.status(200).json({data: foundUser._id, message: "Success"});
+			res.status(200).json({data: foundUser._id, message: "Success", status: 200});
 		} else {
 			return res.status(400).json({message: "Username/passsword is correct"});
 		}
@@ -189,7 +191,7 @@ app.delete('/api/v1/logout', async(req, res, next) => {
 
 		if(!req.session.currentUser) return res.status(401).json({message: "unauthorized"});
 
-		const sessionDestroyed = await req.session.destroy;
+		const sessionDestroyed = await req.session.destroy();
 		
 		return res.status(200).json({message: 'logout success', status: 200});
 
