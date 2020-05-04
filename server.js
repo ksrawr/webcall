@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
+const db = require('./models');
 const io = require('socket.io').listen(server);
 
 const PORT = 4000;
@@ -48,8 +49,8 @@ io.on('connection', (socket) => {
 
 	});
 
-	socket.on('new message', (msg) => {
-		socket.broadcast.emit('new message', {
+	socket.on('send message', (msg) => {
+		socket.broadcast.emit('send message', {
 			username: socket.user,
 			message: msg
 		});
