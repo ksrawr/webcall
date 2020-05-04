@@ -1,5 +1,8 @@
 const express = require('express');
-
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
@@ -8,7 +11,19 @@ const io = require('socket.io').listen(server);
 
 const PORT = 4000;
 
+app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
+
+app.use(session({
+		store: new MongoStore({ url: "mongodb://localhost:27017/yallchat-app" }),
+		secret: "iamlesecretsecretsecret",
+		resave: false,
+		saveUnitialized: false,
+		cookie: {
+			maxAge: 1000 * 60 * 60 * 3 // expire in 24 hours
+		}
+	})
+);
 
 app.get('/', (req, res) => {
 	res.sendFile('./views/index.html', {
@@ -73,6 +88,27 @@ io.on('connection', (socket) => {
 
 		console.log(users);
 	})
+
+})
+
+/////////////////////////// API TIME
+app.post('/api/v1/register', async (req, res, next) => {
+
+	try {
+
+		const foundUser = await db.User.findOne({email: req.body.email})
+
+		if (foundUser) {
+			return res.status(409).json({message: "User already registered"});
+		}
+
+		// return res.status(200).json({msg: "no user found!"});
+
+
+	} catch (error) {
+		console.log(error)
+		return next(error)
+	}
 
 })
 
