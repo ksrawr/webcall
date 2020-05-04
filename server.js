@@ -15,10 +15,10 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
 
 app.use(session({
-		store: new MongoStore({ url: "mongodb://localhost:27017/yallchat-app" }),
+		store: new MongoStore({ url: "mongodb://localhost:27017/webcall" }),
 		secret: "iamlesecretsecretsecret",
 		resave: false,
-		saveUnitialized: false,
+		saveUninitialized: false,
 		cookie: {
 			maxAge: 1000 * 60 * 60 * 3 // expire in 24 hours
 		}
@@ -103,11 +103,38 @@ app.post('/api/v1/register', async (req, res, next) => {
 		}
 
 		// return res.status(200).json({msg: "no user found!"});
+		const salt = await bcyrpt.genSalt(10);
+		const hash = await bcrypt.hash(req.body.password, salt);
 
+		const newUser = {
+			name: req.body.name,
+			email: req.body.email,
+			password: hash,
+		};
+
+		const createdUser = await db.User.create(newUser);
+
+		return res.status(201).json({message: "user created", status: 201});
 
 	} catch (error) {
 		console.log(error)
 		return next(error)
+	}
+
+})
+
+// Index Users Route
+app.get('/api/v1/users', async(req, res, next) => {
+
+	try {
+
+		const users = await db.Users.find({});
+
+		if(users) return res.status(200).json({users, status: 200});
+
+	} catch(error) {
+		console.log(error);
+		return next(error);
 	}
 
 })
