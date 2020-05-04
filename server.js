@@ -141,6 +141,34 @@ app.get('/api/v1/users', async(req, res, next) => {
 
 })
 
+// Login Route 
+app.post('/api/v1/login', async(req, res, next) => {
+
+	try {
+		const foundUser = await db.User.findOne({email: req.body.email});
+
+		if(!foundUser) return res.status(404).json({message: "user not registered"});
+
+		const isMatch = await bcrypt.compare(req.body.password, foundUser.password);
+
+		if(isMatch) {
+			req.session.currentUser = {
+				id: foundUser._id,
+				name: foundUser.name,
+				email: foundUser.email
+			};
+
+			res.status(200).json({data: foundUser._id, message: "Success"});
+		} else {
+			return res.status(400).json({message: "Username/passsword is correct"});
+		}
+	} catch(error) {
+		console.log(error);
+		return next(error);
+	}
+
+})
+
 server.listen(PORT, () => {
 	console.log(`Server running on http://localhost:${PORT}`);
 })
