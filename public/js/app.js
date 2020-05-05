@@ -27,11 +27,19 @@ const setSocketInfo = () => {
 const displayMessages = () => {
 	console.log(state.messages);
 	const messagesHTML = state.messages.map((message) => {
-		return `
-			<div>
-				<p class="message">${message.author} [${message.date}]: ${message.content}</p>
-			</div>
-		`;
+		if(message.author === 'admin') {
+			return `
+				<div>
+					<p class="message"><i>${message.author} [${message.date}]: ${message.content}</i></p>
+				</div>
+			`;
+		} else {
+			return `
+				<div>
+					<p class="message">${message.author} [${message.date}]: ${message.content}</p>
+				</div>
+			`;
+		}
 	}).join('');
 
 	messageList.innerHTML = messagesHTML;
@@ -63,7 +71,11 @@ const getUserInfo = async () => {
 
 // Server Msgs ('who is connected, who has joined')
 state.socket.on('message', (data) => {
-	console.log({data});
+	console.log(data);
+
+	state.messages.push(data);
+	displayMessages();
+
 })
 
 // Active Users

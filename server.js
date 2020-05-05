@@ -63,7 +63,10 @@ io.on('connection', (socket) => {
 
 		console.log(users);
 
-		io.emit('message', { user: 'admin', msg: `${username}, has joined. Welcome!`});
+		const date = new Date();
+		const datetext = date.toTimeString().split(' ')[0];
+
+		io.emit('message', { author: 'admin', content: `${username} has joined.`, date: datetext});
 
 		socket.emit('current users', {activeUsers: users});
 
