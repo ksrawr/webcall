@@ -13,6 +13,7 @@
 	<!-- Socket.io -->
 	<script defer src="/socket.io/socket.io.js"></script>
 	<script defer src="/js/app.js"></script>
+	<script defer src="/js/video.js"></script>
 </head>
 <body>
 
@@ -24,6 +25,9 @@
 			<!-- Videos Container -->
 			<div class="col-sm-12 col-md-9 videos-container">
 				<p>i am videos container</p>
+				<button class="startBtn">START</button>
+				<video class="localVideo" autoplay></video>
+				<video class="remoteVideo" autoplay></video>
 			</div>
 
 			<!-- Chat Container -->
