@@ -4,6 +4,8 @@ let state = {
 	username: '',
 	email: '',
 	messages: [],
+	stream: null,
+	yourConn: null,
 	socket: io()
 }
 
@@ -74,7 +76,7 @@ state.socket.on('message', (data) => {
 	console.log(data);
 
 	state.messages.push(data);
-	displayMessages();
+	//displayMessages();
 
 })
 
@@ -88,7 +90,7 @@ state.socket.on('new message', (data) => {
 	console.log(data);
 	state.messages.push(data.messageObj);
 
-	displayMessages();
+	//displayMessages();
 })
 
 getUserInfo();

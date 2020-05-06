@@ -9,6 +9,8 @@ const server = http.createServer(app);
 const db = require('./models');
 const io = require('socket.io').listen(server);
 
+let broadcaster;
+
 const PORT = 4000;
 
 app.use(bodyParser.json());
@@ -41,7 +43,7 @@ app.get('/login', (req, res) => {
 
 app.get('/home', (req, res) => {
 	if(!req.session.currentUser) return res.redirect('/login');
-	res.sendFile('./views/index.html', {
+	res.sendFile('./views/test.html', {
 		root: `${__dirname}/`
 	})
 })
@@ -86,6 +88,11 @@ io.on('connection', (socket) => {
 
 	socket.on('new message', (msg) => {
 		io.emit('new message', msg);
+	})
+
+	socket.on('broadcaster', () =>  {
+		broadcaster = socket.id;
+		socket.emit('broadcaster');
 	})
 
 	socket.on('disconnecting', () => {
