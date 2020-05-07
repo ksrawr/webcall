@@ -27,26 +27,26 @@ app.use(session({
 	})
 );
 
-// app.get('/', (req, res) => {
-// 	if(req.session.currentUser) return res.redirect('/home');
-// 	res.sendFile('./views/register.html', {
-// 		root: `${__dirname}/`
-// 	})
-// })
-// 
-// app.get('/login', (req, res) => {
-// 	if(req.session.currentUser) return res.redirect('/home');
-// 	res.sendFile('./views/login.html', {
-// 		root: `${__dirname}/`
-// 	})
-// })
-// 
-// app.get('/home', (req, res) => {
-// 	if(!req.session.currentUser) return res.redirect('/login');
-// 	res.sendFile('./views/index.html', {
-// 		root: `${__dirname}/`
-// 	})
-// })
+app.get('/', (req, res) => {
+	if(req.session.currentUser) return res.redirect('/home');
+	res.sendFile('./views/register.html', {
+		root: `${__dirname}/`
+	})
+})
+
+app.get('/login', (req, res) => {
+	if(req.session.currentUser) return res.redirect('/home');
+	res.sendFile('./views/login.html', {
+		root: `${__dirname}/`
+	})
+})
+
+app.get('/home', (req, res) => {
+	if(!req.session.currentUser) return res.redirect('/login');
+	res.sendFile('./views/index.html', {
+		root: `${__dirname}/`
+	})
+})
 
 app.get('/stream', (req, res) => {
 	res.sendFile('./views/streamer.html', {
@@ -54,7 +54,7 @@ app.get('/stream', (req, res) => {
 	});
 })
 
-app.get('/viewer', (req, res) => {
+app.get('/view', (req, res) => {
 	res.sendFile('./views/viewer.html', {
 		root: `${__dirname}/`
 	});
