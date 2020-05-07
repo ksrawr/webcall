@@ -6,7 +6,7 @@ let state = {
 	messages: [],
 	stream: null,
 	yourConn: null,
-	socket: io()
+	// socket: io()
 }
 
 const messageList = document.getElementById('messageList');
@@ -74,7 +74,7 @@ const getUserInfo = async () => {
 // Server Msgs ('who is connected, who has joined')
 state.socket.on('message', (data) => {
 	console.log(data);
-
+	
 	state.messages.push(data);
 	//displayMessages();
 
