@@ -7,7 +7,7 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const db = require('./models');
-const io = require('socket.io').listen(server);
+const io = require('socket.io')(server);
 
 let broadcaster;
 
@@ -27,33 +27,67 @@ app.use(session({
 	})
 );
 
-app.get('/', (req, res) => {
-	if(req.session.currentUser) return res.redirect('/home');
-	res.sendFile('./views/register.html', {
+// app.get('/', (req, res) => {
+// 	if(req.session.currentUser) return res.redirect('/home');
+// 	res.sendFile('./views/register.html', {
+// 		root: `${__dirname}/`
+// 	})
+// })
+// 
+// app.get('/login', (req, res) => {
+// 	if(req.session.currentUser) return res.redirect('/home');
+// 	res.sendFile('./views/login.html', {
+// 		root: `${__dirname}/`
+// 	})
+// })
+// 
+// app.get('/home', (req, res) => {
+// 	if(!req.session.currentUser) return res.redirect('/login');
+// 	res.sendFile('./views/index.html', {
+// 		root: `${__dirname}/`
+// 	})
+// })
+
+app.get('/stream', (req, res) => {
+	res.sendFile('./views/streamer.html', {
 		root: `${__dirname}/`
-	})
+	});
 })
 
-app.get('/login', (req, res) => {
-	if(req.session.currentUser) return res.redirect('/home');
-	res.sendFile('./views/login.html', {
+app.get('/viewer', (req, res) => {
+	res.sendFile('./views/viewer.html', {
 		root: `${__dirname}/`
-	})
-})
-
-app.get('/home', (req, res) => {
-	if(!req.session.currentUser) return res.redirect('/login');
-	res.sendFile('./views/test.html', {
-		root: `${__dirname}/`
-	})
+	});
 })
 
 // SOCKET TIME!!!!!!
 const users = {};
 
-io.on('connection', (socket) => {
+io.sockets.on('connection', (socket) => {
 
 	console.log('client connected');
+
+	socket.on('broadcaster', () => {
+		broadcaster = socket.id;
+		console.log("broadcaster", broadcaster);
+		socket.broadcast.emit('broadcaster');
+	})
+
+	socket.on('watcher', () => {
+		broadcaster && socket.to(broadcaster).emit('watcher', socket.id);
+	})
+
+	socket.on('offer', (id, message) => {
+		socket.to(id).emit('offer', socket.id, message);
+	})
+
+	socket.on('answer', (id, message) => {
+		socket.to(id).emit('answer', socket.id, message);
+	})
+
+	socket.on('candidate', (id, message) => {
+		socket.to(id).emit('candidate', socket.id, message);
+	})
 
 	socket.on('session', ({username, email}, callback) => {
 
@@ -90,9 +124,9 @@ io.on('connection', (socket) => {
 		io.emit('new message', msg);
 	})
 
-	socket.on('broadcaster', () =>  {
-		broadcaster = socket.id;
-		socket.emit('broadcaster');
+	socket.on('client message', (msg) => {
+		console.log('client message received: ', msg);
+		socket.broadcast.emit('server message', msg);
 	})
 
 	socket.on('disconnecting', () => {
