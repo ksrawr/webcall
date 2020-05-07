@@ -1,0 +1,39 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+main {
+	width: 100vw;
+	height: 80vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+input[type=text], input[type=password] {
+	border: none;
+	border: 1px solid #ced4da;
+	border-radius: 3px;
+	padding: 10px;
+	min-width: 280px;
+}
+
+p {
+	margin-top: 10px;
+	margin-bottom: 0;
+}
+
+button {
+	margin-top: 20px;
+	padding: 10px;
+}
