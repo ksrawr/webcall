@@ -1,23 +1,20 @@
-/*global socket, video, config*/
 const peerConnections = {};
-
-/** @type {MediaStreamConstraints} */
 const constraints = {
 	// audio: true,
 	video: {facingMode: "user"}
 };
 
 navigator.mediaDevices.getUserMedia(constraints)
-.then(function(stream) {
+.then((stream) => {
 	video.srcObject = stream;
 	socket.emit('broadcaster');
 }).catch(error => console.error(error));
 
-socket.on('answer', function(id, description) {
+socket.on('answer', (id, description) => {
 	peerConnections[id].setRemoteDescription(description);
 });
 
-socket.on('watcher', function(id) {
+socket.on('watcher', (id) => {
 	const peerConnection = new RTCPeerConnection(config);
 	peerConnections[id] = peerConnection;
 	let stream = video.srcObject;
@@ -34,11 +31,11 @@ socket.on('watcher', function(id) {
 	};
 });
 
-socket.on('candidate', function(id, candidate) {
+socket.on('candidate', (id, candidate, count) => {
 	peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
 });
 
-socket.on('bye', function(id) {
+socket.on('bye', (id) => {
 	peerConnections[id] && peerConnections[id].close();
 	delete peerConnections[id];
 });

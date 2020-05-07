@@ -1,4 +1,5 @@
 let peerConnection;
+let viewers = 0;
 
 socket.on('offer', (id, description) => {
 	console.log('offer has been made');
@@ -20,7 +21,8 @@ socket.on('offer', (id, description) => {
 
 })
 
-socket.on('candidate', (id, candidate) => {
+socket.on('candidate', (id, candidate, count) => {
+	viewers = count;
 	peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
 		.catch(e => console.error(e));
 })
