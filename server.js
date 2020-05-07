@@ -10,6 +10,7 @@ const db = require('./models');
 const io = require('socket.io')(server);
 
 let broadcaster;
+let count = 0;
 
 const PORT = 4000;
 
@@ -66,6 +67,7 @@ const users = {};
 io.sockets.on('connection', (socket) => {
 
 	console.log('client connected');
+	count++;
 
 	socket.on('broadcaster', () => {
 		broadcaster = socket.id;
@@ -86,7 +88,7 @@ io.sockets.on('connection', (socket) => {
 	})
 
 	socket.on('candidate', (id, message) => {
-		socket.to(id).emit('candidate', socket.id, message);
+		socket.to(id).emit('candidate', socket.id, message, count-1);
 	})
 
 	socket.on('session', ({username, email}, callback) => {
@@ -145,6 +147,8 @@ io.sockets.on('connection', (socket) => {
 		delete users[socket.id];
 
 		console.log(users);
+
+		count--;
 	})
 
 })
