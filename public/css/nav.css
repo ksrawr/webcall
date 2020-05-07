@@ -1,0 +1,24 @@
+#main-nav {
+	background-color: #007bff;
+	overflow: hidden;
+	margin-bottom: 20px;
+}
+
+#main-nav a {
+	float: left;
+	display: block;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+}
+
+#main-nav #logout {
+	float: right;
+}
+
+#main-nav a:hover {
+	background-color: #6AB1FD;
+	color: white;
+}
